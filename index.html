@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Malla Curricular - Estadística Informática</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f8f9fa;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ciclo {
+    margin: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 10px;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .ciclo h2 {
+    background: #007bff;
+    color: #fff;
+    font-size: 16px;
+    margin: -10px -10px 10px -10px;
+    padding: 5px;
+  }
+  .curso {
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    padding: 5px;
+    cursor: pointer;
+    background: #eee;
+    transition: background 0.3s;
+  }
+  .curso:hover {
+    background: #d1ecf1;
+  }
+  .curso.unlocked {
+    background: #c3e6cb;
+  }
+</style>
+</head>
+<body>
+
+<h1>Malla Curricular - Estadística Informática</h1>
+<div class="grid" id="malla"></div>
+
+<script>
+// Definición de cursos
+const cursos = [
+  // Ciclo I
+  { id: "CC1032", nombre: "Análisis Matemático I", ciclo: 1, prerrequisitos: [] },
+  { id: "CC1024", nombre: "Ecología General", ciclo: 1, prerrequisitos: [] },
+  { id: "CC1031", nombre: "Química General", ciclo: 1, prerrequisitos: [] },
+  { id: "EP1065", nombre: "Administración General", ciclo: 1, prerrequisitos: [] },
+  { id: "EP1035", nombre: "Introducción a la Ciencia de Datos", ciclo: 1, prerrequisitos: [] },
+  { id: "EP1036", nombre: "Sociedad y Cultura Peruana", ciclo: 1, prerrequisitos: [] },
+
+  // Ciclo II
+  { id: "CC2073", nombre: "Análisis Matemático II", ciclo: 2, prerrequisitos: ["CC1032"] },
+  { id: "EP2088", nombre: "Perú en el Contexto Internacional", ciclo: 2, prerrequisitos: [] },
+  { id: "EP1061", nombre: "Lenguaje y Comunicación", ciclo: 2, prerrequisitos: [] },
+  { id: "CC1030", nombre: "Física General", ciclo: 2, prerrequisitos: [] },
+  { id: "EP2091", nombre: "Técnicas de Exploración de Datos", ciclo: 2, prerrequisitos: ["EP1035"] },
+  { id: "EP2092", nombre: "Herramientas de Gestión Empresarial", ciclo: 2, prerrequisitos: [] },
+  { id: "EP2067", nombre: "Economía General", ciclo: 2, prerrequisitos: [] },
+
+  // Ciclo III
+  { id: "EP2065", nombre: "Ingeniería de Procesos", ciclo: 3, prerrequisitos: [] },
+  { id: "CC3108", nombre: "Matemáticas Discretas", ciclo: 3, prerrequisitos: [] },
+  { id: "EP3085", nombre: "Estadística General", ciclo: 3, prerrequisitos: [] },
+  { id: "EP2035", nombre: "Lenguaje de Programación I", ciclo: 3, prerrequisitos: [] },
+  { id: "EP2028", nombre: "Redacción y Argumentación", ciclo: 3, prerrequisitos: [] },
+  { id: "CC2074", nombre: "Álgebra Matricial", ciclo: 3, prerrequisitos: ["CC2073"] },
+  { id: "EP2036", nombre: "Lenguaje de Programación III", ciclo: 5, prerrequisitos: ["EP2035","EP3035"] },
+
+  // Ciclo IV
+  { id: "EP2081", nombre: "Análisis Estadístico", ciclo: 4, prerrequisitos: ["EP3085"] },
+  { id: "EP2087", nombre: "Metodología de la Investigación", ciclo: 4, prerrequisitos: [] },
+  { id: "EP3035", nombre: "Lenguaje de Programación II", ciclo: 4, prerrequisitos: ["EP2035"] },
+  { id: "EP2183", nombre: "Métodos de Optimización", ciclo: 4, prerrequisitos: ["CC2074"] },
+  { id: "EP2088C", nombre: "Ética y Ciudadanía", ciclo: 4, prerrequisitos: [] },
+  { id: "EP3190", nombre: "Sistemas de Gestión de Base de Datos I", ciclo: 4, prerrequisitos: ["EP2035"] },
+
+  // Ciclo V
+  { id: "EP3168", nombre: "Diseños Experimentales I", ciclo: 5, prerrequisitos: ["EP2081"] },
+  { id: "EP3170", nombre: "Estrategias de Muestreo", ciclo: 5, prerrequisitos: ["EP2081"] },
+  { id: "EP3106", nombre: "Cálculo de Probabilidades", ciclo: 5, prerrequisitos: ["CC2073"] },
+  { id: "EP3107", nombre: "Análisis de Regresión", ciclo: 5, prerrequisitos: ["EP2081"] },
+
+  // Ciclo VI
+  { id: "EP4184", nombre: "Sistemas de Gestión de Base de Datos II", ciclo: 6, prerrequisitos: ["EP3190"] },
+  { id: "EP4056", nombre: "Técnicas Multivariadas", ciclo: 6, prerrequisitos: ["EP3107"] },
+  { id: "EP4202", nombre: "Algoritmia", ciclo: 6, prerrequisitos: ["EP3035"] },
+  { id: "EP3169", nombre: "Inferencia Estadística", ciclo: 6, prerrequisitos: ["EP3106"] },
+  { id: "EP3172", nombre: "Diseños Experimentales II", ciclo: 6, prerrequisitos: ["EP3168"] },
+
+  // Ciclo VII
+  { id: "EP2403", nombre: "Marketing", ciclo: 7, prerrequisitos: [] },
+  { id: "EP4068", nombre: "Estadística Bayesiana", ciclo: 7, prerrequisitos: ["EP3169"] },
+  { id: "EP4150", nombre: "Modelos Lineales I", ciclo: 7, prerrequisitos: ["EP3107"] },
+  { id: "EP3153", nombre: "Estadística Computacional", ciclo: 7, prerrequisitos: ["EP4202"] },
+  { id: "EP2405", nombre: "Sistemas de Información Gerencial", ciclo: 7, prerrequisitos: ["EP4184"] },
+
+  // Ciclo VIII
+  { id: "EP4187", nombre: "Investigación de Mercados", ciclo: 8, prerrequisitos: ["EP2403"] },
+  { id: "EP4186", nombre: "Gestión Estratégica de la Información", ciclo: 8, prerrequisitos: ["EP2405"] },
+  { id: "EP4146", nombre: "Estadística No Paramétrica", ciclo: 8, prerrequisitos: ["EP3169"] },
+  { id: "EP4192", nombre: "Máquinas de Aprendizaje", ciclo: 8, prerrequisitos: ["EP3153"] },
+  { id: "EP4185", nombre: "Modelos Lineales II", ciclo: 8, prerrequisitos: ["EP4150"] },
+  { id: "EP4181", nombre: "Seminario en Estadística Informática I", ciclo: 8, prerrequisitos: [] },
+
+  // Ciclo IX
+  { id: "EP5001", nombre: "Análisis de Series de Tiempo", ciclo: 9, prerrequisitos: ["EP4185"] },
+  { id: "EP5191", nombre: "Estadística Espacial", ciclo: 9, prerrequisitos: ["EP4146"] },
+  { id: "EP5192", nombre: "Ciencia de Datos I", ciclo: 9, prerrequisitos: ["EP4192"] },
+  { id: "EP5193", nombre: "Gestión de Proyectos de Información", ciclo: 9, prerrequisitos: ["EP4186"] },
+  { id: "EP5194", nombre: "Prácticas Pre-Profesionales", ciclo: 9, prerrequisitos: [] },
+
+  // Ciclo X
+  { id: "EP5102", nombre: "Ciencia de Datos II", ciclo: 10, prerrequisitos: ["EP5192"] },
+  { id: "EP5121", nombre: "Tecnologías Emergentes", ciclo: 10, prerrequisitos: [] },
+  { id: "EP5171", nombre: "Seminario en Estadística Informática II", ciclo: 10, prerrequisitos: ["EP4181"] },
+];
+
+const mallaDiv = document.getElementById("malla");
+const cursosEstado = {}; // Guardará qué cursos están desbloqueados
+
+// Crear HTML dinámico
+for (let ciclo = 1; ciclo <= 10; ciclo++) {
+  const divCiclo = document.createElement("div");
+  divCiclo.className = "ciclo";
+  divCiclo.innerHTML = `<h2>Ciclo ${ciclo}</h2>`;
+  cursos.filter(c => c.ciclo === ciclo).forEach(curso => {
+    const divCurso = document.createElement("div");
+    divCurso.className = "curso";
+    divCurso.id = curso.id;
+    divCurso.textContent = curso.nombre;
+    divCurso.title = curso.id;
+    divCurso.onclick = () => desbloquearCursos(curso.id);
+    divCiclo.appendChild(divCurso);
+  });
+  mallaDiv.appendChild(divCiclo);
+}
+
+function desbloquearCursos(idCurso) {
+  cursosEstado[idCurso] = true;
+  cursos.forEach(curso => {
+    if (curso.prerrequisitos.includes(idCurso)) {
+      const div = document.getElementById(curso.id);
+      if (div) div.classList.add("unlocked");
+    }
+  });
+}
+</script>
+</body>
+</html>
